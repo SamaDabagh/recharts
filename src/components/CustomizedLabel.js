@@ -34,12 +34,12 @@ const CustomizedLabel = (props) => {
     ) : (
       <foreignObject
         x={x + props.data[index].Length / 2}
-        y={2 * props.data[index].UIE - (2 * y) / 9}
+        y={2 * props.data[index].UIE}
         width={70}
         height={30}
         style={{
           background: "white",
-          width: "70px",
+          width: "100px",
           height: "30px",
           padding: "4px",
           textAlign: "left",
