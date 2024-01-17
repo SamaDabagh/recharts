@@ -109,7 +109,7 @@ const Profiles = ({ data }) => {
           }}
         >
           <CartesianGrid />
-          <XAxis dataKey="x-axis-key" />
+          <XAxis dataKey="x-axis-key" domain={[0, 600]} type="number" />
           <YAxis domain={[Math.floor(minDIE - 1), Math.ceil(maxUGE + 1)]} />
           <Tooltip content={<CustomTooltip />} cursor={{ fill: "white" }} />
           {/* <Tooltip /> */}
