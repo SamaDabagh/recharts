@@ -42,3 +42,39 @@
 .container {
   margin-top: 50px;
 }
+
+.tooltip-custom-container {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-align: center;
+  cursor: default;
+  visibility: visible;
+  pointer-events: none;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  transform: translate(511.096px, 57px);
+  transition: -webkit-transform 400ms ease 0s;
+}
+
+.tooltip-custom-ul {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-align: center;
+  cursor: default;
+  visibility: visible;
+  pointer-events: none;
+  white-space: nowrap;
+  padding: 0px;
+  margin: 0px;
+}
+.tooltip-custom-li {
+  margin-bottom: "0px";
+  padding-bottom: "0px";
+  margin-top: "0px";
+  padding-top: "2px";
+}

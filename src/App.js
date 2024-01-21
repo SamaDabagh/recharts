@@ -1,8 +1,7 @@
 import "./App.css";
-// import Example from "./Example";
 import { useEffect, useState } from "react";
 import Papa from "papaparse";
-import profiles_input_node_2_3 from "./assets/profiles_input_node_2_30.csv";
+import profiles_input_node_2_3 from "./assets/profiles_input_node_2_3.csv";
 import Profiles from "./Profiles";
 function App() {
   const [rowData, setRowData] = useState([]);
@@ -13,7 +12,8 @@ function App() {
         download: true,
         delimiter: ",",
         complete: (result) => {
-          const finalData = result.data
+          console.log("result.data.length - 1: ", result.data);
+          const finalData = result?.data
             .slice(1, result.data.length - 1)
             .map((dataOfEachRow) => {
               const rowObject = {};
@@ -30,6 +30,8 @@ function App() {
             if (!index) {
               element["x-axis-key"] = 0;
             } else {
+              console.log("array[index].Length:", array[index].Length);
+
               element["x-axis-key"] =
                 array[index - 1]["x-axis-key"] + array[index - 1].Length;
             }
@@ -40,11 +42,11 @@ function App() {
     };
     fetchParseData();
   }, []);
-
+  console.log("rowData", rowData);
   return (
     <div className="App">
-      {/* <Example data={rowData} /> */}
       {rowData.length > 0 && <Profiles data={rowData} />}
+      <h2>{rowData[0]?.name}</h2>
     </div>
   );
 }

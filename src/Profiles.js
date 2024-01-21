@@ -14,14 +14,72 @@ import {
 
 const CustomizedLabel = (props) => {
   const { x, y, index } = props;
-  console.log("props[index]: ", props);
+  // console.log("props[index]: ", props);
+  // console.log("props.data.index: ", props.data[index]);
+  // console.log("  props.index :", props.index);
+  // console.log("  props.data.Length - 1:", props.data.length - 1);
   return (
-    <foreignObject x={x} y={y + 20} width={100} height={100}>
-      <div>{props.data[index]["Slope (%)"]}</div>
-      <div>{props.data[index].Length}</div>
-    </foreignObject>
+    props.index !== props.data.length - 1 &&
+    (props.data.length < 5 ? (
+      <foreignObject
+        x={x + props.data[index].Length}
+        y={y + (props.data[index].UGE - props.data[index].UCE) / 2}
+        width={100}
+        height={100}
+        style={{
+          background: "white",
+          width: "120px",
+          height: "70px",
+          padding: "5px",
+          textAlign: "left",
+          marginLeft: "auto",
+        }}
+      >
+        <div style={{ fontSize: "12px", fontWeight: "bold", color: "#253858" }}>
+          Slope(%): {props.data[index]["Slope (%)"]}
+        </div>
+        <div
+          style={{
+            fontSize: "12px",
+            fontWeight: "bold",
+            color: "#253858",
+          }}
+        >
+          Length: {props.data[index].Length} m
+        </div>
+      </foreignObject>
+    ) : (
+      <foreignObject
+        x={x + 5}
+        y={y + (props.data[index].UGE - props.data[index].UCE) / 2}
+        width={100}
+        height={100}
+        style={{
+          background: "white",
+          width: "90px",
+          height: "70px",
+          padding: "4px",
+          textAlign: "left",
+          marginLeft: "10px",
+        }}
+      >
+        <div style={{ fontSize: "8px", fontWeight: "bold", color: "#253858" }}>
+          Slope(%): {props.data[index]["Slope (%)"]}
+        </div>
+        <div
+          style={{
+            fontSize: "8px",
+            fontWeight: "bold",
+            color: "#253858",
+          }}
+        >
+          Length: {props.data[index].Length} m
+        </div>
+      </foreignObject>
+    ))
   );
 };
+const [surfaceWidth, surfaceHeight] = [600, 300];
 
 // using Customized gives you access to all relevant chart props
 const CustomizedRectangle = (props) => {
@@ -29,7 +87,6 @@ const CustomizedRectangle = (props) => {
   // get first and second series in chart
   const firstSeries = formattedGraphicalItems[0];
   const secondSeries = formattedGraphicalItems[1];
-
   // render custom content using points from the graph
   return firstSeries?.props?.points.map((firstSeriesPoint, index) => {
     const secondSeriesPoint = secondSeries?.props?.points[index];
@@ -37,12 +94,12 @@ const CustomizedRectangle = (props) => {
 
     return (
       <Rectangle
-        key={firstSeriesPoint.payload.Pipe}
-        width={10}
+        key={firstSeriesPoint.payload["x-axis-key"]}
+        width={6}
         height={yDifference}
-        x={secondSeriesPoint.x - 5}
+        x={secondSeriesPoint.x - 3}
         y={secondSeriesPoint.y}
-        stroke="#000"
+        stroke="#253858"
         fill="transparent"
       />
     );
@@ -50,23 +107,79 @@ const CustomizedRectangle = (props) => {
 };
 
 export const CustomTooltip = ({ active, payload, label }) => {
-  console.log("active", active);
-  console.log("payload: ", payload);
-  console.log("pipe: ", payload[0]?.payload.Pipe);
-  console.log("label", label);
+  // console.log("active", active);
+  // console.log("payload: ", payload);
+  // console.log("pipe: ", payload[0]?.payload.Pipe);
+  // console.log("label", label);
 
   if (active && payload && payload.length) {
     return (
-      <div className="custom-tooltip">
-        <p className="label">{`${label} : ${payload[0].value}`}</p>
-        <p>Pipe: {payload[0]?.payload.Pipe}</p>
-        <div>
-          {payload.map((pld) => (
-            <div style={{ display: "inline-block", padding: 10 }}>
-              <div style={{ color: pld.fill }}>{pld.value}</div>
-              <div>{pld.dataKey}</div>
-            </div>
-          ))}
+      <div
+        className="custom-tooltip"
+        style={{
+          background: "white",
+          border: "1px solid rgb(136, 132, 216)",
+          textAlign: "center",
+          paddingLeft: "4px",
+          paddingRight: "4px",
+          marginTop: "3px",
+          paddingBottom: "8px",
+          width: "100px",
+          height: "120px",
+        }}
+      >
+        <h4
+          style={{
+            color: "#253858",
+            marginBottom: "0px",
+            paddingBottom: "0px",
+            paddingTop: "2x",
+          }}
+        >
+          Node: {payload[0]?.payload.Unode}
+        </h4>
+        <div
+          style={{
+            color: `${payload[2]?.color}`,
+            fontSize: "14px",
+            fontWeight: "bolder",
+            marginTop: "4px",
+            paddingTop: "2px",
+          }}
+        >
+          <p
+            style={{
+              color: `${payload[0]?.color}`,
+              marginBottom: "0px",
+              paddingBottom: "0px",
+              marginTop: "0px",
+              paddingTop: "2px",
+            }}
+          >
+            UGE : {payload[0]?.payload.UGE}
+          </p>
+          <p
+            style={{
+              color: `${payload[2]?.color}`,
+              marginBottom: "0px",
+              paddingBottom: "0px",
+              marginTop: "0px",
+              paddingTop: "2px",
+            }}
+          >
+            UCE : {payload[0]?.payload.UCE}
+          </p>
+          <p
+            style={{
+              color: `${payload[1]?.color}`,
+              marginBottom: "0px",
+              paddingBottom: "0px",
+              marginTop: "0px",
+              paddingTop: "2px",
+            }}
+          >
+            UIE : {payload[0]?.payload.UIE}
+          </p>
         </div>
       </div>
     );
@@ -76,7 +189,7 @@ export const CustomTooltip = ({ active, payload, label }) => {
 };
 
 const Profiles = ({ data }) => {
-  console.log("data in profile: ", data);
+  // console.log("data in profile: ", data);
 
   const elementMax = data.reduce((prev, next) => {
     if (prev.UGE > next.UGE) {
@@ -96,9 +209,9 @@ const Profiles = ({ data }) => {
 
   return (
     <div className="container">
-      <ResponsiveContainer width="100%" height={500}>
+      <ResponsiveContainer width="100%" height={surfaceHeight}>
         <LineChart
-          width={500}
+          width={700}
           height={300}
           data={data}
           margin={{
@@ -108,20 +221,28 @@ const Profiles = ({ data }) => {
             bottom: 5,
           }}
         >
-          <CartesianGrid />
-          <XAxis dataKey="x-axis-key" domain={[0, 600]} type="number" />
-          <YAxis domain={[Math.floor(minDIE - 1), Math.ceil(maxUGE + 1)]} />
-          <Tooltip content={<CustomTooltip />} cursor={{ fill: "white" }} />
-          {/* <Tooltip /> */}
+          <CartesianGrid strokeDasharray="3 3" />
+
+          <XAxis dataKey="x-axis-key" padding={{ left: 0, right: 30 }} />
+
+          <YAxis
+            domain={[Math.floor(minDIE - 1), Math.ceil(maxUGE + 1)]}
+            type="number"
+            dataKey="y"
+          />
+          <Tooltip
+            content={<CustomTooltip />}
+            cursor={{ fill: "transparent" }}
+          />
           <Legend />
           <Line
             dataKey="UGE"
-            stroke="#8884d8"
+            stroke="#82ca9d"
             label={<CustomizedLabel data={data} />}
           />
-          <Line dataKey="UIE" stroke="#22bb11" />
+          <Line dataKey="UIE" stroke="#ffbc99" />
 
-          <Line dataKey="UCE" stroke="#82ca9d" />
+          <Line dataKey="UCE" stroke="#ffbc99" />
 
           <Customized component={CustomizedRectangle} />
         </LineChart>
