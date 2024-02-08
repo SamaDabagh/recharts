@@ -1,13 +1,13 @@
 import "./App.css";
 import { useEffect, useState } from "react";
 import Papa from "papaparse";
-import profiles_input_node_2_3 from "./assets/profiles_input_node_2_3.csv";
+import profiles_input_node_2_3 from "./assets/profiles_input.csv";
 import Profiles from "./Profiles";
 function App() {
   const [rowData, setRowData] = useState([]);
 
   useEffect(() => {
-    const fetchParseData = async (params) => {
+    const fetchParseData = async () => {
       Papa.parse(profiles_input_node_2_3, {
         download: true,
         delimiter: ",",
@@ -46,7 +46,6 @@ function App() {
   return (
     <div className="App">
       {rowData.length > 0 && <Profiles data={rowData} />}
-      <h2>{rowData[0]?.name}</h2>
     </div>
   );
 }

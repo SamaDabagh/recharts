@@ -1,48 +1,85 @@
 import React from "react";
+import FileSaver from "file-saver";
+import { useCurrentPng } from "recharts-to-png";
+import { useCallback } from "react";
 import {
   LineChart,
   Line,
   XAxis,
   YAxis,
   CartesianGrid,
+  ComposedChart,
   Tooltip,
   Legend,
   ResponsiveContainer,
   Customized,
   Rectangle,
 } from "recharts";
+import { scaleLinear } from "d3-scale";
+const scale = scaleLinear();
+
+const CostumLegend = (props) => {
+  console.log("--------payload: ", props);
+  const { payload } = props;
+
+  return (
+    <>
+      <h3 style={{ fontWeight: "bold", color: "#253858" }}>{props.title}</h3>
+      <ul
+        style={{
+          listStyle: "none",
+          display: "flex",
+          justifyContent: "center",
+          paddingLeft: "0px",
+        }}
+      >
+        {payload.map((entry, index) => (
+          <li
+            key={`item-${index}`}
+            style={{ color: `${entry.color}`, marginLeft: "10px" }}
+          >
+            &mdash; {entry.value}
+          </li>
+        ))}
+      </ul>
+    </>
+  );
+};
 
 const CustomizedLabel = (props) => {
   const { x, y, index } = props;
-  // console.log("props[index]: ", props);
-  // console.log("props.data.index: ", props.data[index]);
+  console.log("props[index]: ", props);
+  console.log("props.data.index: ", props.data[index]["x-axis-key"]);
+  console.log("  props.index :", props.index);
+  // console.log("  props.data:", props.data);
   // console.log("  props.index :", props.index);
-  // console.log("  props.data.Length - 1:", props.data.length - 1);
+  // console.log("  props.index :", props.index);
+
   return (
     props.index !== props.data.length - 1 &&
-    (props.data.length < 5 ? (
+    (props.data["x-axis-key"] < 350 && props.data.length < 7 ? (
       <foreignObject
         x={x + props.data[index].Length}
-        y={y + (props.data[index].UGE - props.data[index].UCE) / 2}
-        width={100}
-        height={100}
+        y={props.data[index].UIE + 12}
+        width={70}
+        height={30}
         style={{
           background: "white",
-          width: "120px",
-          height: "70px",
+          width: "100px",
+          height: "50px",
           padding: "5px",
           textAlign: "left",
           marginLeft: "auto",
         }}
       >
-        <div style={{ fontSize: "12px", fontWeight: "bold", color: "#253858" }}>
+        <div style={{ fontSize: "12px", fontWeight: "bold", color: "#ff8858" }}>
           Slope(%): {props.data[index]["Slope (%)"]}
         </div>
         <div
           style={{
             fontSize: "12px",
             fontWeight: "bold",
-            color: "#253858",
+            color: "#bb3858",
           }}
         >
           Length: {props.data[index].Length} m
@@ -50,14 +87,14 @@ const CustomizedLabel = (props) => {
       </foreignObject>
     ) : (
       <foreignObject
-        x={x + 5}
-        y={y + (props.data[index].UGE - props.data[index].UCE) / 2}
-        width={100}
-        height={100}
+        x={x + props.data[index].Length / 2}
+        y={+132}
+        width={70}
+        height={30}
         style={{
           background: "white",
-          width: "90px",
-          height: "70px",
+          width: "70px",
+          height: "30px",
           padding: "4px",
           textAlign: "left",
           marginLeft: "10px",
@@ -79,7 +116,6 @@ const CustomizedLabel = (props) => {
     ))
   );
 };
-const [surfaceWidth, surfaceHeight] = [600, 300];
 
 // using Customized gives you access to all relevant chart props
 const CustomizedRectangle = (props) => {
@@ -107,11 +143,6 @@ const CustomizedRectangle = (props) => {
 };
 
 export const CustomTooltip = ({ active, payload, label }) => {
-  // console.log("active", active);
-  // console.log("payload: ", payload);
-  // console.log("pipe: ", payload[0]?.payload.Pipe);
-  // console.log("label", label);
-
   if (active && payload && payload.length) {
     return (
       <div
@@ -122,26 +153,28 @@ export const CustomTooltip = ({ active, payload, label }) => {
           textAlign: "center",
           paddingLeft: "4px",
           paddingRight: "4px",
-          marginTop: "3px",
-          paddingBottom: "8px",
-          width: "100px",
-          height: "120px",
+          marginTop: "1px",
+          paddingBottom: "9px",
+          paddingTop: "0px",
+          width: "80px",
+          height: "80px",
         }}
       >
-        <h4
+        <h5
           style={{
             color: "#253858",
             marginBottom: "0px",
             paddingBottom: "0px",
-            paddingTop: "2x",
+            paddingTop: "1px",
+            marginTop: "4px",
           }}
         >
           Node: {payload[0]?.payload.Unode}
-        </h4>
+        </h5>
         <div
           style={{
             color: `${payload[2]?.color}`,
-            fontSize: "14px",
+            fontSize: "12px",
             fontWeight: "bolder",
             marginTop: "4px",
             paddingTop: "2px",
@@ -188,7 +221,24 @@ export const CustomTooltip = ({ active, payload, label }) => {
   return null;
 };
 
+const CartesianGridNoDashVertical = (props) => {
+  console.log("props---from---CartesianGridNoDashVertical", props);
+  return <></>;
+};
+
 const Profiles = ({ data }) => {
+  // console.log("aaaaaaaaaaaaaaa====>", data[data.length - 1]["x-axis-key"]);
+  const [surfaceWidth, surfaceHeight] = [700, 300];
+  const [getPng, { ref, isLoading }] = useCurrentPng();
+
+  const handleDivDownload = useCallback(async () => {
+    const png = await getPng();
+
+    if (png) {
+      FileSaver.saveAs(png, "myChart.png");
+    }
+  }, [getPng]);
+
   // console.log("data in profile: ", data);
 
   const elementMax = data.reduce((prev, next) => {
@@ -207,12 +257,20 @@ const Profiles = ({ data }) => {
   });
   let minDIE = elementMin.DIE;
 
+  let verticalPointsArr = data.map((element) => element["x-axis-key"]);
+
+  console.log("verticalPointsArr---->", verticalPointsArr.slice(1));
+  console.log(
+    "X-axis data values:",
+    data.map((element) => element["x-axis-key"])
+  );
+
   return (
     <div className="container">
       <ResponsiveContainer width="100%" height={surfaceHeight}>
         <LineChart
-          width={700}
-          height={300}
+          width={surfaceWidth}
+          height={surfaceHeight}
           data={data}
           margin={{
             top: 5,
@@ -220,10 +278,17 @@ const Profiles = ({ data }) => {
             left: 20,
             bottom: 5,
           }}
+          ref={ref}
         >
           <CartesianGrid strokeDasharray="3 3" />
 
-          <XAxis dataKey="x-axis-key" padding={{ left: 0, right: 30 }} />
+          <XAxis
+            dataKey="x-axis-key"
+            scale={scale}
+            // padding={{ left: 0, right: 0 }}
+            domain={[0, Math.ceil(data[data.length - 1]["x-axis-key"])]}
+            type="number"
+          />
 
           <YAxis
             domain={[Math.floor(minDIE - 1), Math.ceil(maxUGE + 1)]}
@@ -234,19 +299,39 @@ const Profiles = ({ data }) => {
             content={<CustomTooltip />}
             cursor={{ fill: "transparent" }}
           />
-          <Legend />
+
+          <Legend content={<CostumLegend title={data[0]?.name} />} />
+
           <Line
             dataKey="UGE"
             stroke="#82ca9d"
             label={<CustomizedLabel data={data} />}
           />
-          <Line dataKey="UIE" stroke="#ffbc99" />
+          <Line dataKey="UIE" stroke="#bb3858" />
 
-          <Line dataKey="UCE" stroke="#ffbc99" />
+          <Line dataKey="UCE" stroke="#bb3858" />
 
           <Customized component={CustomizedRectangle} />
+          <h2 style={{ color: "#253858" }}>{data[0]?.name}</h2>
         </LineChart>
       </ResponsiveContainer>
+
+      <br />
+      <button
+        style={{
+          background: "#82ca9d",
+          border: "1px solid #f7f7f4",
+          padding: "20px",
+          fontSize: "14px",
+          fontWeight: "bold",
+          borderRadius: "4px",
+          color: "white",
+          marginLeft: "5px",
+        }}
+        onClick={handleDivDownload}
+      >
+        {isLoading ? "Downloading..." : "Download Chart"}
+      </button>
     </div>
   );
 };
