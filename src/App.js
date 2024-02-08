@@ -2,7 +2,7 @@ import "./App.css";
 import { useEffect, useState } from "react";
 import Papa from "papaparse";
 import profiles_input_node_2_3 from "./assets/profiles_input.csv";
-import Profiles from "./Profiles";
+import Profiles from "./components/Profiles";
 function App() {
   const [rowData, setRowData] = useState([]);
 
@@ -30,8 +30,6 @@ function App() {
             if (!index) {
               element["x-axis-key"] = 0;
             } else {
-              console.log("array[index].Length:", array[index].Length);
-
               element["x-axis-key"] =
                 array[index - 1]["x-axis-key"] + array[index - 1].Length;
             }
@@ -42,7 +40,7 @@ function App() {
     };
     fetchParseData();
   }, []);
-  console.log("rowData", rowData);
+  // console.log("rowData", rowData);
   return (
     <div className="App">
       {rowData.length > 0 && <Profiles data={rowData} />}
