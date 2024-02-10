@@ -77,5 +77,4 @@ const CustomTooltip = ({ active, payload, label }) => {
   return null;
 };
 
-
 export default CustomTooltip;

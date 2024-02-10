@@ -10,7 +10,6 @@ import {
   XAxis,
   YAxis,
   CartesianGrid,
-  ComposedChart,
   Tooltip,
   Legend,
   ResponsiveContainer,
@@ -112,6 +111,7 @@ const Profiles = ({ data }) => {
           borderRadius: "4px",
           color: "white",
           marginLeft: "5px",
+          cursor: "pointer",
         }}
         onClick={handleDivDownload}
       >
