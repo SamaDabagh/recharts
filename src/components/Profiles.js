@@ -2,7 +2,7 @@ import React from "react";
 import FileSaver from "file-saver";
 import { useCurrentPng } from "recharts-to-png";
 import { useCallback } from "react";
-import { scaleLinear } from "d3-scale";
+import { scaleLinear, scaleLog } from "d3-scale";
 
 import {
   LineChart,
@@ -24,6 +24,7 @@ import CustomTooltip from "../components/CustomTooltip";
 const Profiles = ({ data }) => {
   const [surfaceWidth, surfaceHeight] = [700, 300];
   const scale = scaleLinear();
+  const yScale = scaleLog().base(Math.E);
   const [getPng, { ref, isLoading }] = useCurrentPng();
 
   const handleDivDownload = useCallback(async () => {
@@ -65,7 +66,7 @@ const Profiles = ({ data }) => {
           }}
           ref={ref}
         >
-          <CartesianGrid strokeDasharray="3 3" />
+          <CartesianGrid strokeDasharray="10 10" />
 
           <XAxis
             dataKey="x-axis-key"
@@ -78,6 +79,7 @@ const Profiles = ({ data }) => {
             domain={[Math.floor(minDIE - 1), Math.ceil(maxUGE + 1)]}
             type="number"
             dataKey="y"
+            scale={yScale}
           />
           <Tooltip
             content={<CustomTooltip />}
