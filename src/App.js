@@ -1,7 +1,7 @@
 import "./App.css";
 import { useEffect, useState } from "react";
 import Papa from "papaparse";
-import profiles_input_node_2_3 from "./assets/profiles_input.csv";
+import profiles_input_node_2_3 from "./assets/profiles_input_node_2_30.csv";
 import Profiles from "./components/Profiles";
 function App() {
   const [rowData, setRowData] = useState([]);
@@ -12,7 +12,6 @@ function App() {
         download: true,
         delimiter: ",",
         complete: (result) => {
-          console.log("result.data.length - 1: ", result.data);
           const finalData = result?.data
             .slice(1, result.data.length - 1)
             .map((dataOfEachRow) => {

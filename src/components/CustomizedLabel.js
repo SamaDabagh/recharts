@@ -6,7 +6,7 @@ const CustomizedLabel = (props) => {
     (props.data.length < 7 ? (
       <foreignObject
         x={x + props.data[index].Length}
-        y={props.data[index].UIE + 12}
+        y={props.data[index].UIE + 80}
         width={70}
         height={30}
         style={{
@@ -34,7 +34,7 @@ const CustomizedLabel = (props) => {
     ) : (
       <foreignObject
         x={x + props.data[index].Length / 2}
-        y={+132}
+        y={2 * props.data[index].UIE - (2 * y) / 9}
         width={70}
         height={30}
         style={{
@@ -46,7 +46,7 @@ const CustomizedLabel = (props) => {
           marginLeft: "10px",
         }}
       >
-        <div style={{ fontSize: "9px", fontWeight: "bold", color: "#253858" }}>
+        <div style={{ fontSize: "10px", fontWeight: "bold", color: "#253858" }}>
           Slope(%): {props.data[index]["Slope (%)"]}
         </div>
         <div

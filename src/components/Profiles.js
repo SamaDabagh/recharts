@@ -2,7 +2,6 @@ import React from "react";
 import FileSaver from "file-saver";
 import { useCurrentPng } from "recharts-to-png";
 import { useCallback } from "react";
-import { scaleLinear, scaleLog } from "d3-scale";
 
 import {
   LineChart,
@@ -22,9 +21,9 @@ import CustomizedRectangle from "../components/CustomizedRectangle";
 import CustomTooltip from "../components/CustomTooltip";
 
 const Profiles = ({ data }) => {
-  const [surfaceWidth, surfaceHeight] = [700, 300];
-  const scale = scaleLinear();
-  const yScale = scaleLog().base(Math.E);
+  const [chartWidth, chartHeight] = [800, 400];
+
+  const margin = { top: 20, right: 30, left: 40, bottom: 20 }; // Adjust margins as needed
   const [getPng, { ref, isLoading }] = useCurrentPng();
 
   const handleDivDownload = useCallback(async () => {
@@ -53,16 +52,16 @@ const Profiles = ({ data }) => {
 
   return (
     <div className="container">
-      <ResponsiveContainer width="100%" height={surfaceHeight}>
+      <ResponsiveContainer width="100%" height={chartHeight}>
         <LineChart
-          width={surfaceWidth}
-          height={surfaceHeight}
+          width={chartWidth}
+          height={chartHeight}
           data={data}
           margin={{
-            top: 5,
-            right: 30,
-            left: 20,
-            bottom: 5,
+            top: margin.top,
+            right: margin.right,
+            left: margin.left,
+            bottom: margin.bottom,
           }}
           ref={ref}
         >
@@ -70,16 +69,17 @@ const Profiles = ({ data }) => {
 
           <XAxis
             dataKey="x-axis-key"
-            scale={scale}
+            scale="linear"
             domain={[0, Math.ceil(data[data.length - 1]["x-axis-key"])]}
             type="number"
+            tick={{ formatter: (tick) => tick / 100, interval: 5 }} // Divide the tick value by 50 and set interval to 50
           />
 
           <YAxis
             domain={[Math.floor(minDIE - 1), Math.ceil(maxUGE + 1)]}
             type="number"
             dataKey="y"
-            scale={yScale}
+            tick={{ formatter: (tick) => tick / 10, interval: 0.5 }} // Divide the tick value by 100 and set interval to 5
           />
           <Tooltip
             content={<CustomTooltip />}
